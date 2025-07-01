@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Shelves{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Shelves</h2>
+    <a href="{% url 'shelf_create' %}" class="btn btn-primary mb-3">Add Shelf</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Category</th>
+                <th>Books on Shelf</th>
+                <th>Max Borrow/Student</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shelf in shelves %}
+            <tr>
+                <td>{{ shelf.shelf_name }}</td>
+                <td>{{ shelf.shelf_code }}</td>
+                <td>
+                    {% if shelf.get_category_display %}
+                        {{ shelf.get_category_display }}
+                    {% else %}
+                        {{ shelf.category }}
+                    {% endif %}
+                </td>
+                <td>{{ shelf.books.count }}</td>
+                <td>
+                    {{ shelf.max_borrow_per_student }}
+                </td>
+                <td>
+                    <a href="{% url 'shelf_edit' shelf.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+                    <a href="{% url 'shelf_delete' shelf.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center">No shelves yet.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

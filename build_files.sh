@@ -4,7 +4,10 @@
 pip install -r requirements.txt
 
 # Collect static files
-python manage.py collectstatic --noinput
+python3.9 manage.py collectstatic --noinput  #explain below
+# The command above collects all static files from the Django app and places them in the STATIC_ROOT directory.
+# This is necessary for serving static files in production environments.
+
 
 # Create public directory
 mkdir -p public

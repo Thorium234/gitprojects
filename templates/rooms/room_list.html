@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Rooms{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Rooms (Form/Stream/Class)</h2>
+        <a href="{% url 'room_create' %}" class="btn btn-primary">Add Room</a>
+    </div>
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Form</th>
+                <th>Stream</th>
+                <th>Class Teacher</th>
+                <th>Total Students</th>
+                <th>Dashboard</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room.form }}</td>
+                <td>{{ room.stream }}</td>
+                <td>{{ room.class_teacher }}</td>
+                <td>
+                  {% if room.total_students is not None %}
+                    {{ room.total_students }}
+                  {% else %}
+                    {{ room.students.count }}
+                  {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'room_dashboard' room.id %}" class="btn btn-info btn-sm">
+                        <i class="fas fa-chart-bar"></i> Dashboard
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'room_edit' room.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'room_delete' room.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No rooms available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div> 
+{% endblock %}

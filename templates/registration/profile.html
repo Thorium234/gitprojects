@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
+
+
+
 {% load crispy_forms_tags %}
 
 {% block title %}User Profile - {{ user.username }}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
+    <!-- Dashboard button at the top -->
+    <div class="mb-3 text-end">
+        {% if profile.role == "student" %}
+            <a href="{% url 'student_dashboard' %}" class="btn btn-success">
+                <i class="fas fa-home"></i> Student Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'staff_dashboard' %}" class="btn btn-success">
+                <i class="fas fa-home"></i> Staff Dashboard
+            </a>
+        {% endif %}
+    </div>
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
             <div class="d-flex justify-content-between align-items-center">
@@ -12,10 +27,16 @@
                     <i class="fas fa-user-circle me-2"></i>User Profile
                 </h3>
                 <span class="badge bg-light text-dark">
-                    {% if user.is_staff %}
-                        <i class="fas fa-shield-alt"></i> Staff
+                    {% if profile.role == "super_admin" %}
+                        <i class="fas fa-crown"></i> Super Admin
+                    {% elif profile.role == "admin" %}
+                        <i class="fas fa-user-shield"></i> Admin
+                    {% elif profile.role == "staff" %}
+                        <i class="fas fa-chalkboard-teacher"></i> Staff
+                    {% elif profile.role == "student" %}
+                        <i class="fas fa-user-graduate"></i> Student
                     {% else %}
-                        <i class="fas fa-user"></i> Regular User
+                        <i class="fas fa-user"></i> User
                     {% endif %}
                 </span>
             </div>
@@ -29,20 +50,25 @@
                     </div>
                     <h4>{{ user.username }}</h4>
                     <p class="text-muted">{{ user.email }}</p>
+                    <p class="text-muted">Phone: {{ profile.phone|default:"Not set" }}</p>
+                    {% if profile.admission_number %}
+                        <p class="text-muted">Admission No: {{ profile.admission_number }}</p>
+                    {% endif %}
                     <p class="text-muted">Joined: {{ user.date_joined|date:"F d, Y" }}</p>
-                    <a href="{% url 'password_reset' %}" class="btn btn-outline-info mt-2">
+                    <a href="{% url 'password_change' %}" class="btn btn-outline-info mt-2">
                         <i class="fas fa-key"></i> Change Password
                     </a>
                     <a href="{% url 'logout' %}" class="btn btn-outline-danger mt-2">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
-                </div>
+                </div>   
                 
                 <div class="col-md-8">
                     <h4 class="mb-4"><i class="fas fa-user-edit me-2"></i>Edit Profile</h4>
-                    <form method="post">
+                    <form method="post" autocomplete="off">
                         {% csrf_token %}
-                        {{ form|crispy }}
+                        {{ user_form|crispy }}
+                        {{ profile_form|crispy }}
                         <button type="submit" class="btn btn-primary mt-3">
                             <i class="fas fa-save me-2"></i>Save Changes
                         </button>
@@ -54,6 +80,10 @@
         <div class="card-footer text-muted text-center">
             Last login: {{ user.last_login|date:"F d, Y H:i" }}
         </div>
+    </div>
+    <div class="alert alert-info mt-3 text-center" role="alert">
+        <i class="fas fa-info-circle"></i>
+        Please keep your profile information up to date. This helps us serve you better!
     </div>
 </div>
 {% endblock %}

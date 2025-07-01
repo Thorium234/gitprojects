@@ -1,0 +1,82 @@
+{% extends 'base_auth.html' %}
+{% block title %}Loading...{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height:100vh; background: linear-gradient(135deg, #f5f6fa 60%, #e3eafc 100%);">
+    <div class="text-center">
+        <!-- Animated typing title -->
+        <div style="min-height:60px;">
+            <h2 class="fw-bold" id="typing-title" style="letter-spacing:1px; color:#2e4798;"></h2>
+        </div>
+        <!-- Animated spinner with subtle shadow and accessibility text -->
+        <div class="mt-4 mb-3 position-relative d-inline-block">
+            <div class="spinner-border text-primary spinner-circle shadow" style="width:4rem; height:4rem;" role="status" aria-label="Loading"></div>
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 id="loading-msg" class="fw-semibold text-primary mb-2 mt-4" style="letter-spacing:1px;">Processing, please wait...</h5>
+        <p class="text-muted mb-0" id="sub-message">We are processing your request. This will only take a moment.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Typing animation for the title
+const titleText = "Library Management System";
+let i = 0;
+function typeWriter() {
+    if (i < titleText.length) {
+        document.getElementById("typing-title").innerHTML += titleText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 55);
+    }
+}
+typeWriter();
+
+// General animated loading message
+const loadingMessages = [
+    "Processing, please wait",
+    "Working on your request",
+    "Almost there",
+    "Finalizing, just a moment"
+];
+let msgIndex = 0, dotCount = 0;
+setInterval(() => {
+    // Cycle through professional general messages
+    msgIndex = (msgIndex + 1) % loadingMessages.length;
+    dotCount = (dotCount + 1) % 4;
+    document.getElementById("loading-msg").innerText = loadingMessages[msgIndex] + '.'.repeat(dotCount);
+}, 1300);
+
+// Sub-message: can adjust based on context or randomize for polish
+const subMessages = [
+    "We are processing your request. This will only take a moment.",
+    "Thank you for your patience.",
+    "Your action is being completed securely.",
+    "Bringing you the latest updates..."
+];
+document.getElementById("sub-message").innerText = subMessages[Math.floor(Math.random() * subMessages.length)];
+
+// Redirect logic: set this to the desired URL
+const redirectUrl = "{{ redirect_url|default:'' }}";
+if (redirectUrl) {
+    setTimeout(function(){
+        window.location.href = redirectUrl;
+    }, 3400); // 3.4 seconds for a professional, visible effect
+}
+</script>
+<style>
+.spinner-circle {
+    animation: spinPulse 1.2s cubic-bezier(.6,0,.4,1) infinite;
+    border-width: .5em;
+}
+@keyframes spinPulse {
+    0% { transform: rotate(0deg) scale(1);}
+    50% { transform: rotate(180deg) scale(1.13);}
+    100% { transform: rotate(360deg) scale(1);}
+}
+.shadow {
+    box-shadow: 0 4px 24px 0 #bfc8ea;
+}
+</style>
+{% endblock %}

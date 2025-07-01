@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Student Profile{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Student Profile: {{ student.first_name }} {{ student.last_name }}</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Admission Number:</strong> {{ student.admission_number }}</p>
+            <p><strong>Form:</strong> {{ student.room.form }}</p>
+            <p><strong>Stream:</strong> {{ student.room.stream }}</p>
+            <!-- ...inside the student profile section... -->
+            <p><strong>Registered:</strong> {{ student.created|date:"M d, Y" }}</p>
+            <!-- <a href="{% url 'student_assign_book' student.pk %}" class="btn btn-success btn-sm">Assign Book</a> -->
+        </div>
+        <div class="col-md-6">
+            {% if student.student_picture %}
+                <img src="{{ student.student_picture.url }}" class="img-thumbnail" style="max-width:200px;" alt="Student Picture">
+            {% else %}
+                <span class="text-muted">No Picture</span>
+            {% endif %}
+        </div>
+    </div>
+    <hr>
+    <h4>Borrow History</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Borrowed</th>
+                <th>Due Date</th>
+                <th>Returned</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for borrow in borrows %}
+            <tr class="{% if borrow.is_overdue and not borrow.returned %}table-danger{% endif %}">
+                <td>{{ borrow.book.title }}</td>
+                <td>{{ borrow.borrowed_date|date:"M d, Y" }}</td>
+                <td>{{ borrow.due_date|date:"M d, Y" }}</td>
+                <td>
+                    {% if borrow.returned %}
+                        {{ borrow.returned_date|date:"M d, Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if borrow.returned %}
+                        <span class="badge bg-success">Returned</span>
+                    {% elif borrow.is_overdue %}
+                        <span class="badge bg-danger">Overdue</span>
+                    {% else %}
+                        <span class="badge bg-warning">Borrowed</span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No borrow history</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'student_list' %}" class="btn btn-secondary mt-3">
+        <i class="fas fa-arrow-left"></i> Back to Students
+    </a>
+</div>
+{% endblock %}
