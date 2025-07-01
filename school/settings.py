@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-=!0y1pqt=(+j607gz$w&&k8h^pvpfl7(t_l+*-suof727=*ljv
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    '.vercel.app', '127.0.0.1', 'localhost', '.now.sh', '.railway.app'
+    '.vercel.app','.onrender.com', '127.0.0.1', 'localhost', '.now.sh', '.railway.app'
 ]
 
 INSTALLED_APPS = [
@@ -89,7 +89,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
