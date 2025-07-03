@@ -8,6 +8,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Security: Use environment variables for secrets!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-insecure-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
