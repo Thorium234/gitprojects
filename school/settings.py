@@ -8,11 +8,11 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-=!0y1pqt=(+j607gz$w&&k8h^pvpfl7(t_l+*-suof727=*ljv'
-DEBUG = False
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-insecure-key')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = [
-    '.vercel.app','.onrender.com', '127.0.0.1', 'localhost', '.now.sh', '.railway.app'
+    '.onrender.com', '127.0.0.1', 'localhost', '.railway.app'
 ]
 
 INSTALLED_APPS = [
@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'users',
     'library',
-    "widget_tweaks",
+    'widget_tweaks',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -64,13 +66,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'school.wsgi.application'
 
-
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get(
-            'DATABASE_URL',
-            'postgresql://postgres:bOxdzCxHZWiWVPFDTYlmQpojytHMBYYN@caboose.proxy.rlwy.net:32794/railway'
-        ),
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
         ssl_require=True
     )
@@ -90,12 +88,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'static/images' ,'media')
+# Cloudinary media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+MEDIA_URL = '/media/'  # Not strictly needed with Cloudinary, but safe to keep
 
 INTERNAL_IPS = ['127.0.0.1']
 
@@ -105,8 +108,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'thoriumpaul@gmail.com'
-EMAIL_HOST_PASSWORD = 'bkofwiukmdksbfdi '
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 AUTHENTICATION_BACKENDS = [
     'users.backends.StaffAuthBackend',
@@ -118,6 +121,3 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_REDIRECT_URL = 'profile_user'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'select_role'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
